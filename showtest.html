@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="UTF-8">
+    <title>存股-股價列表</title>
     <style>
         table {
             font-size: 22px;
@@ -19,49 +20,46 @@
 </head>
 <body>
     <h1>存股-股價列表</h1>
-    <p>更新時間: <?php echo date("Y-m-d / H:i:s"); ?></p>
-    
+    <p>更新時間: <span id="update-time"></span></p>
+
     <!-- 新增下載連結 -->
     <p><a href="final.csv" download="final.csv">下載最終股票列表 (CSV)</a></p>
     
-    <table>
+    <table id="stock-table">
         <tr>
             <th>股票名稱</th>
             <th>價格</th>
         </tr>
-        <?php
-        // 檔案處理
-        $input_file = "stocklist.csv";
-        $output_file = "final.csv";
-        
-        // 打開輸出檔案以寫入 CSV，並確保編碼為 UTF-8
-        $output = fopen($output_file, "w");
-        
-        // 寫入 UTF-8 BOM 以確保文件被識別為 UTF-8
-        fwrite($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
-        
-        // 寫入 CSV 標題
-        fputcsv($output, ["股名", "股價"]);
-        
-        // 打開輸入檔案以讀取 CSV
-        $input = fopen($input_file, "r");
-        
-        // 讀取輸入檔案內容並寫入到輸出檔案
-        while (($data = fgetcsv($input, 1000, ",")) !== FALSE) {
-            // 顯示表格內容
-            echo "<tr>";
-            echo "<td>" . $data[0] . "</td>";
-            echo "<td>" . $data[2] . "</td>";
-            echo "</tr>";
-            
-            // 寫入到 CSV
-            fputcsv($output, [$data[0], $data[2]]);
-        }
-        
-        // 關閉檔案
-        fclose($input);
-        fclose($output);
-        ?>
     </table>
+
+    <script>
+        // 顯示當前時間
+        document.getElementById("update-time").innerText = new Date().toLocaleString();
+
+        // 使用 Fetch API 讀取 CSV 文件
+        fetch('final.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');  // 按行分割
+                const table = document.getElementById('stock-table');
+
+                rows.forEach(row => {
+                    const cols = row.split(',');  // 按逗號分割每行
+                    if (cols.length === 2) {  // 確保有兩列資料
+                        const tr = document.createElement('tr');
+                        const tdName = document.createElement('td');
+                        const tdPrice = document.createElement('td');
+                        
+                        tdName.textContent = cols[0];
+                        tdPrice.textContent = cols[1];
+                        
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdPrice);
+                        table.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => console.error('Error reading the CSV file:', error));
+    </script>
 </body>
 </html>
