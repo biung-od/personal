@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        function runTimer() {
+            setTimeout(function() {
+                location.reload();
+            }, 600000);
+        }
+
+        function fetchStockPrice(url) {
+            return fetch(url)
+                .then(response => response.text())
+                .then(text => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    const priceElement = doc.querySelector('span.Fz\\(32px\\).Fw\\(b\\).Lh\\(1\\).Mend\\(16px\\)');
+                    return priceElement ? priceElement.textContent : null;
+                })
+                .catch(error => {
+                    console.error('Error fetching stock price:', error);
+                    return null;
+                });
+        }
+
+        async function fetchStockData() {
+            const stockList = [];
+            const response = await fetch('stock.csv');
+            const csvText = await response.text();
+
+            const rows = csvText.split('\n');
+            for (const row of rows) {
+                const [name, id] = row.split(',');
+
+                if (name && id) {
+                    const url = `https://tw.stock.yahoo.com/quote/${id.trim()}`;
+                    const price = await fetchStockPrice(url);
+
+                    if (price) {
+                        stockList.push({ name: name.trim(), id: id.trim(), price, time: new Date().toLocaleString() });
+                    }
+                }
+            }
+
+            renderTable(stockList);
+            saveToCSV(stockList);
+        }
+
+        function renderTable(stockList) {
+            let table = '<table>';
+            stockList.forEach(stock => {
+                table += `<tr><td>${stock.name}[&nbsp;${stock.id}&nbsp;]</td><td>${stock.price}</td></tr>`;
+            });
+            table += '</table>';
+            document.getElementById('stockTable').innerHTML = table;
+            document.getElementById('updateTime').textContent = new Date().toLocaleString();
+        }
+
+        function saveToCSV(stockList) {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            stockList.forEach(stock => {
+                const row = `${stock.name},${stock.id},${stock.price},${stock.time}\n`;
+                csvContent += row;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'stocklist.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = function() {
+            runTimer();
+            fetchStockData();
+        };
+    </script>
+    <style>
+        table {
+            font-size: 22px;
+            font-family: Arial, sans-serif;
+            width: 500px;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>存股-股價即時更新系統</h1>
+    <p>更新時間: <span id="updateTime"></span></p>
+    <div id="stockTable"></div>
+</body>
+</html>
