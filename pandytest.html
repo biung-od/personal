@@ -37,7 +37,7 @@
         document.getElementById("update-time").innerText = new Date().toLocaleString();
 
         // 讀取並處理 CSV 文件
-        fetch('pandylist.csv')
+        fetch('pandytest.csv')
             .then(response => response.text())
             .then(data => {
                 const rows = data.split('\n');  // 按行分割
