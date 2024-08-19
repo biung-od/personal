@@ -33,8 +33,8 @@
 					  <ul>
 								<li><a href="#intro">課程資訊</a></li>
 								<li><a href="#work">理財課</a></li>
-								<!--<li><a href="#about">法王傳記全文</a></li>
-								<li><a href="#contact">共同課程</a></li>
+								<li><a href="#about">主任標的</a></li>
+								<li><a href="#contact">其他標的</a></li>
 								<!--<li><a href="#elements">Elements</a></li>-->
 							</ul>
 						</nav>
@@ -67,23 +67,107 @@
 
 						<!-- About -->
 							<article id="about">
-								<h2 class="major">法王傳記全文</h2>
+								<h2 class="major">主任標的</h2>
 								<span class="image main"></span>
-								
+								<h1>存股-股價列表</h1>
+    <p>更新時間: <span id="update-time"></span></p>
+    
+    <!-- 新增下載連結 -->
+    <p><a id="download-link" href="#" download="pandyfinal.csv">下載最終股票列表 (CSV)</a></p>
+    
+    <table id="stock-table">
+        <tr>
+            <th>股票名稱</th>
+            <th>價格</th>
+        </tr>
+    </table>
 
+    <script>
+        // 顯示當前時間
+        document.getElementById("update-time").innerText = new Date().toLocaleString();
+
+        // 讀取並處理 CSV 文件
+        fetch('pandylist.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');  // 按行分割
+                const table = document.getElementById('stock-table');
+                const finalData = [["股名", "股價"]];  // 初始化輸出資料
+                
+                rows.forEach(row => {
+                    const cols = row.split(',');  // 按逗號分割每行
+                    if (cols.length >= 3) {  // 確保有足夠的列資料
+                        const tr = document.createElement('tr');
+                        const tdName = document.createElement('td');
+                        const tdPrice = document.createElement('td');
+                        
+                        tdName.textContent = cols[0];
+                        tdPrice.textContent = cols[2];
+                        
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdPrice);
+                        table.appendChild(tr);
+                        
+                        // 將數據添加到最終的 CSV 內容
+                        finalData.push([cols[0], cols[2]]);
+                    }
+                });
+
+                // 生成並設置下載鏈接
+                const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + finalData.map(e => e.join(",")).join("\n");
+                const encodedUri = encodeURI(csvContent);
+                const downloadLink = document.getElementById("download-link");
+                downloadLink.setAttribute("href", encodedUri);
+            })
+            .catch(error => console.error('Error reading the CSV file:', error));
+    </script>
 							</article>
 
 						<!-- Contact -->
 							<article id="contact">
-								<h2 class="major">心病還需心藥醫</h2>
+								<h2 class="major">其他標的</h2>
 								<span class="image main"></span>
-                                <div class="video-container">
-                                <p><iframe width="760" height="420" src="https://www.youtube.com/embed/videoseries?list=PLHUvfASP8AiwsggQ7yUQrYNvfl0VMDBQq" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
-                                </div>
-                                <div class="video-container2">
-                                <p><iframe src="https://drive.google.com/file/d/1s3cgweYcwRiv25yUsOfgo7IWh-RjFX0S/preview" width="760" height="1000"></iframe></p>
-                                </div>
+                                <h1>存股-股價列表</h1>
+    <p>更新時間: <span id="update-time"></span></p>
+
+    <!-- 新增下載連結 -->
+    <p><a href="final.csv" download="final.csv">下載最終股票列表 (CSV)</a></p>
+    
+    <table id="stock-table">
+        <tr>
+            
+        </tr>
+    </table>
+
+    <script>
+        // 顯示當前時間
+        document.getElementById("update-time").innerText = new Date().toLocaleString();
+
+        // 使用 Fetch API 讀取 CSV 文件
+        fetch('final.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');  // 按行分割
+                const table = document.getElementById('stock-table');
+
+                rows.forEach(row => {
+                    const cols = row.split(',');  // 按逗號分割每行
+                    if (cols.length === 2) {  // 確保有兩列資料
+                        const tr = document.createElement('tr');
+                        const tdName = document.createElement('td');
+                        const tdPrice = document.createElement('td');
                         
+                        tdName.textContent = cols[0];
+                        tdPrice.textContent = cols[1];
+                        
+                        tr.appendChild(tdName);
+                        tr.appendChild(tdPrice);
+                        table.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => console.error('Error reading the CSV file:', error));
+    </script>                        
                         
                                                        
                                
