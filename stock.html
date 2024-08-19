@@ -139,48 +139,7 @@
         </tr>
     </table>
 
-    <script>
-        // 顯示當前時間
-        document.getElementById("update-time").innerText = new Date().toLocaleString();
-
-        // 讀取並處理 CSV 文件
-        fetch('stocklist.csv')
-            .then(response => response.text())
-            .then(data => {
-                const rows = data.split('\n');  // 按行分割
-                const table = document.getElementById('stock-table');
-                const finalData = [["股名", "股價"]];  // 初始化輸出資料
-                
-                rows.forEach(row => {
-                    const cols = row.split(',');  // 按逗號分割每行
-                    if (cols.length >= 3) {  // 確保有足夠的列資料
-                        const tr = document.createElement('tr');
-                        const tdName = document.createElement('td');
-                        const tdPrice = document.createElement('td');
-                        
-                        tdName.textContent = cols[0];
-                        tdPrice.textContent = cols[2];
-                        
-                        tr.appendChild(tdName);
-                        tr.appendChild(tdPrice);
-                        table.appendChild(tr);
-                        
-                        // 將數據添加到最終的 CSV 內容
-                        finalData.push([cols[0], cols[2]]);
-                    }
-                });
-
-                // 生成並設置下載鏈接
-                const csvContent = "data:text/csv;charset=utf-8,\uFEFF" + finalData.map(e => e.join(",")).join("\n");
-                const encodedUri = encodeURI(csvContent);
-                const downloadLink = document.getElementById("download-link");
-                downloadLink.setAttribute("href", encodedUri);
-            })
-            .catch(error => console.error('Error reading the CSV file:', error));
-    </script>                    
-                        
-                                                       
-                               
+    
 
 							</article>
 
