@@ -9,16 +9,20 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .stock-info {
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
-        .stock-info h2 {
-            margin: 0;
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
         }
-        .stock-info p {
-            margin: 5px 0;
+        th {
+            background-color: #f4f4f4;
         }
-        .stock-info img {
+        img {
             max-width: 100%;
             height: auto;
             border: 1px solid #ddd;
@@ -27,11 +31,23 @@
     </style>
 </head>
 <body>
-    <div class="stock-info">
-        <h2>股票名稱: 台積電</h2>
-        <p>價格: $600</p>
-        <p>應持有比例: 20%</p>
-        <img src="https://example.com/image.jpg" alt="股票圖片">
-    </div>
+    <table>
+        <tr>
+            <th>股票名稱</th>
+            <td>台積電</td>
+        </tr>
+        <tr>
+            <th>價格</th>
+            <td>$600</td>
+        </tr>
+        <tr>
+            <th>應持有比例</th>
+            <td>20%</td>
+        </tr>
+        <tr>
+            <th>圖片</th>
+            <td><img src="https://example.com/image.jpg" alt="股票圖片"></td>
+        </tr>
+    </table>
 </body>
 </html>
