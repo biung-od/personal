@@ -12,15 +12,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
-        th, td {
+        td {
             padding: 10px;
-            text-align: left;
             border: 1px solid #ddd;
         }
         th {
             background-color: #f4f4f4;
+            padding: 10px;
+            text-align: right;
         }
         img {
             max-width: 100%;
@@ -34,19 +34,15 @@
     <table>
         <tr>
             <th>股票名稱</th>
-            <td>台積電</td>
-        </tr>
-        <tr>
             <th>價格</th>
-            <td>$600</td>
-        </tr>
-        <tr>
             <th>應持有比例</th>
-            <td>20%</td>
+            <th>圖片</th>
         </tr>
         <tr>
-            <th>圖片</th>
-            <td><img src="https://example.com/image.jpg" alt="股票圖片"></td>
+            <td>台積電</td>
+            <td>$600</td>
+            <td>20%</td>
+            <td rowspan="2"><img src="https://example.com/image.jpg" alt="股票圖片"></td>
         </tr>
     </table>
 </body>
