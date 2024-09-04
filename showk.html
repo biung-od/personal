@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+        table {
+            font-size: 22px;
+            font-family: Arial;
+            width: 500px;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 50px;
+            text-align: middle;
+        }
+        img {
+            width: 800px; /* 設定圖片寬度 */
+            height: auto; /* 高度自動調整以保持比例 */
+        }
+    </style>
+</head>
+<body>
+    <h1>存股-股價列表</h1>
+    <p>更新時間: <span id="update-time"></span></p>
+    
+    <!-- 新增下載連結 -->
+    <p><a href="final.csv" download="final.csv">下載最終股票列表 (CSV)</a></p>
+    <p><a href="stocklist.csv" download="stocklist.csv">下載最終股票列表 (CSV)</a></p>
+    
+    <table id="stock-table">
+        <tr>
+            <th>股票名稱</th>
+            <th>應持有比例</th>
+            <th>k線圖</th>
+        </tr>
+    </table>
+
+    <script>
+        // 更新時間顯示
+        document.getElementById("update-time").innerText = new Date().toLocaleString();
+
+        // 讀取 CSV 文件並生成表格
+        fetch('ownstock.csv')
+            .then(response => response.text())
+            .then(data => {
+                const table = document.getElementById('stock-table');
+                const rows = data.split('\n');
+                
+                rows.forEach(row => {
+                    const cells = row.split(',');
+                    if (cells.length > 3) {
+                        const tr = document.createElement('tr');
+                        
+                        const nameCell = document.createElement('td');
+                        nameCell.innerText = cells[0];
+                        tr.appendChild(nameCell);
+                        
+                        const priceCell = document.createElement('td');
+                        priceCell.innerText = cells[2];
+                        tr.appendChild(priceCell);
+
+                        const imgCell = document.createElement('td');
+                        const img = document.createElement('img');
+                        img.src = cells[3].trim();
+                        img.alt = 'Stock Image';
+                        imgCell.appendChild(img);
+                        tr.appendChild(imgCell);
+                        
+                        table.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching the CSV file:', error));
+    </script>
+</body>
+</html>
